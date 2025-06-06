@@ -1,0 +1,569 @@
+<!DOCTYPE html>  
+<html lang="pt-br">  
+  <head>    
+    <meta charset="UTF-8" />    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>    
+    <title>Erika & Henrique</title>    
+    <link href="https://fonts.googleapis.com/css2?family=Bree+Serif&display=swap" rel="stylesheet">    
+    <style>    
+      * { margin: 0; padding: 0; box-sizing: border-box; }    
+      body {    
+        background: #000;    
+        font-family: 'Bree Serif', serif;    
+        color: white;    
+        text-align: center;    
+        padding: 20px;    
+        overflow-x: hidden;    
+      }    
+      /* Separator */    
+      .separator {    
+        display: flex;    
+        align-items: center;    
+        width: 90%;    
+        margin: 40px auto;    
+      }    
+      .separator span {    
+        flex: 1;    
+        height: 1px;    
+        background: #fff;    
+      }    
+      .separator i {    
+        margin: 0 10px;    
+        font-size: 1.2em;    
+        color: red;    
+      }    
+      /* Moon image sizing */    
+      .moon-img {    
+        max-width: 200px;    
+        width: 150%;    
+        height: auto;    
+        margin: 20px auto;    
+        display: block;    
+      }    
+      /* Intro screen */    
+      .intro-container { 
+        position: fixed; 
+        top: 0; 
+        left: 0; 
+        width: 100%; 
+        height: 100%; 
+        background: #000; 
+        display: flex; 
+        align-items: center; 
+        justify-content: center; 
+        flex-direction: column; 
+        z-index: 9999; 
+      }    
+      .intro-content {
+        background: #D8A39D;
+        padding: 30px;
+        border-radius: 15px;
+        max-width: 90%;
+        width: 600px;
+        position: relative;
+      }
+      .intro-slide { 
+        display: none; 
+        flex-direction: column; 
+        align-items: center; 
+        text-align: center; 
+        padding: 20px; 
+        color: #333;
+      }    
+      .intro-slide.active { display: flex; }    
+      .intro-first-date { font-size: 2em; color: #ff0000; margin-bottom: 10px;}    
+      .intro-first-line, .intro-lines { font-size: 1.4em; color: #333; margin-bottom: 15px;}    
+      .intro-quote { margin: 20px 0; }    
+      .intro-verse1 { font-size: 1.1em; font-style: italic; color: #555; }    
+      .intro-verse2 { font-size: 1.1em; color: #555; margin-top: 10px; }    
+      /* Ursinho image */
+      .ursinho-img {
+        max-width: 200px;
+        width: 90%;
+        height: auto;
+        margin: 0 auto 20px;
+        display: block;
+      }
+      /* Next arrow */
+      .next-arrow {
+        position: absolute;
+        bottom: 10px;
+        right: 20px;
+        font-size: 2em;
+        color: #ff0000;
+        cursor: pointer;
+        animation: bounce 2s infinite;
+      }
+      @keyframes bounce {
+        0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+        40% {transform: translateY(-10px);}
+        60% {transform: translateY(-5px);}
+      }
+      /* Surpresa button */    
+      #surpresaBtn { 
+        background: red; 
+        color: #fff; 
+        border: none; 
+        padding: 12px 30px; 
+        font-size: 1.2em; 
+        cursor: pointer; 
+        overflow: hidden; 
+        border-radius: 5px; 
+        margin-top: 20px; 
+        position: relative;
+      }    
+      #surpresaBtn::before { 
+        content: ''; 
+        position: absolute; 
+        top: 0; 
+        left: -75%; 
+        width: 50%; 
+        height: 100%; 
+        background: rgba(255,255,255,0.3); 
+        transform: skewX(-25deg); 
+        filter: blur(8px); 
+        animation: shine 2s infinite; 
+      }    
+      @keyframes shine { 0% { left: -75%; } 50% { left: 125%; } 100% { left: 125%; } }    
+      /* Hearts */    
+      .heart { position: absolute; pointer-events: none; font-size: 1.5em; color: red; opacity: 0; animation: floatUp 3s ease-out forwards; }    
+      @keyframes floatUp { 0% { opacity: 1; transform: translateY(0) scale(1); } 100% { opacity: 0; transform: translateY(-110vh) scale(1.5); } }    
+      /* Main Slideshow */    
+      .slideshow-container { position: relative; max-width: 90%; margin: 0 auto 40px; overflow: hidden; border-radius: 15px; }    
+      .slideshow-container .slide { display: none; width: 100%; }    
+      .slideshow-container .slide img { width: 100%; border-radius: 15px; display: block; }    
+      .slideshow-container .dots { position: absolute; bottom: 10px; left: 0; width: 100%; display: flex; justify-content: center; gap: 8px; }    
+      .slideshow-container .dot { width: 12px; height: 12px; background: #fff; border-radius: 50%; cursor: pointer; opacity: 0.6; }    
+      .slideshow-container .dot.active { background: red; opacity: 1; }    
+      h1.main-title { color: red; font-size: 2.5em; margin: 30px 0 10px; }    
+      .frase { font-size: 1em; max-width: 600px; margin: 0 auto 40px; }    
+      h2 { margin: 40px 0 10px; }    
+      .contador-wrapper { display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; margin-bottom: 40px; }    
+      .coluna { display: flex; flex-direction: column; gap: 10px; min-width: 100px; }    
+      .coluna label { font-size: 0.9em; color: #ddd; }    
+      .valor { font-size: 2em; color: red; }    
+      /* Nossa História */    
+      .history-title { font-size: 2.5em; color: white; margin: 40px 0 10px; }    
+      .history-subtitle { font-size: 1em; color: white; max-width: 600px; margin: 0 auto 40px; }    
+      /* Sistema Solar */    
+      .orbit-container { position: relative; width: 250px; height: 250px; margin: 0 auto 20px; border: 5px solid gray; border-radius: 50%; }    
+      .orbit-container .sun { position: absolute; top: 50%; left: 50%; width: 60px; height: 60px; transform: translate(-50%, -50%); }    
+      .orbit-container .orbit { position: absolute; top: 0; left: 0; width: 100%; height: 100%; transform-origin: 50% 50%; animation: orbit 10s linear infinite; }    
+      .orbit-container .earth { position: absolute; top: 0; left: 50%; width: 40px; height: 40px; transform: translate(-50%, -50%); }    
+      @keyframes orbit { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }    
+      .solar-phrase { font-size: 1.5em; font-weight: bold; margin-bottom: 40px; color: white; }    
+      @media (max-width: 700px) {    
+        .orbit-container { width: 200px; height: 200px; }    
+        .orbit-container .sun { width: 50px; height: 50px; }    
+        .orbit-container .earth { width: 30px; height: 30px; }    
+        .solar-phrase { font-size: 1.2em; }    
+        .intro-first-date { font-size: 1.6em; }
+        .intro-first-line, .intro-lines { font-size: 1.2em; }
+        .intro-verse1, .intro-verse2 { font-size: 1em; }
+      }    
+      /* Additional Slideshow */    
+      .slideshow-container.additional { position: relative; max-width: 90%; margin: 0 auto 20px; overflow: hidden; border-radius: 15px; }    
+      .slideshow-container.additional .slide { display: none; width: 100%; }    
+      .slideshow-container.additional .slide img { width: 100%; border-radius: 15px; display: block; }    
+      .slideshow-container.additional .dots { position: absolute; bottom: 10px; left: 0; width: 100%; display: flex; justify-content: center; gap: 8px; }    
+      .slideshow-container.additional .dot { width: 12px; height: 12px; background: #fff; border-radius: 50%; cursor: pointer; opacity: 0.6; }    
+      .slideshow-container.additional .dot.active { background: red; opacity: 1; }    
+      .frase-additional { font-size: 1em; max-width: 600px; margin: 10px auto 40px; color: #fff; }    
+      /* Quiz styles */    
+      #quiz-container { max-width: 600px; margin: 40px auto; padding: 20px; background: rgba(255,255,255,0.05); border: 2px solid #ffb6c1; border-radius: 10px; text-align: left; }    
+      #quiz-container h2 { color: #ffb6c1; margin-bottom: 15px; }    
+      #quiz-container .question { margin: 15px 0 5px; font-size: 1.1em; color: #fff; }    
+      #quiz-container select { width: 100%; padding: 8px; margin-bottom: 10px; border-radius: 5px; border: 1px solid #555; background: #111; color: #fff; }    
+      #quiz-container button { width: 100%; padding: 10px; font-size: 1em; border: none; border-radius: 5px; background: #ffb6c1; color: #000; cursor: pointer; margin-top: 10px; }    
+      #quiz-container button:disabled { background: #555; cursor: default; }    
+      #quiz-container .feedback { margin-top: 10px; font-weight: bold; }    
+      #quiz-container .final { margin-top: 20px; font-size: 1.2em; color: #ffb6c1; }    
+      /* Música section */  
+      .music-section {  
+        color: white;  
+        font-size: 1.5em;  
+        margin: 40px auto;  
+        max-width: 600px;  
+      }  
+      .music-title {  
+        color: #ffb6c1;  
+        font-size: 2em;  
+        margin-bottom: 20px;  
+      }  
+      /* Video styles */  
+      .video-container {  
+        position: relative;  
+        width: 100%;  
+        max-width: 600px;  
+        margin: 20px auto;  
+      }  
+      .video-container video {  
+        width: 100%;  
+        border-radius: 10px;  
+        display: block;  
+      }  
+      .video-poster {  
+        position: absolute;  
+        top: 0;  
+        left: 0;  
+        width: 100%;  
+        height: 100%;  
+        background-size: cover;  
+        background-position: center;  
+        border-radius: 10px;  
+        cursor: pointer;  
+        display: flex;  
+        align-items: center;  
+        justify-content: center;  
+      }  
+      .video-poster::before {  
+        content: "";  
+        position: absolute;  
+        width: 80px;  
+        height: 80px;  
+        background-color: rgba(255, 255, 255, 0.7);  
+        border-radius: 50%;  
+      }  
+      .video-poster::after {  
+        content: "";  
+        position: absolute;  
+        width: 0;  
+        height: 0;  
+        border-style: solid;  
+        border-width: 15px 0 15px 26px;  
+        border-color: transparent transparent transparent #ff0000;  
+        margin-left: 5px;  
+      }
+      /* WhatsApp button */
+      .whatsapp-button {
+        background: #25D366;
+        color: white;
+        border: none;
+        padding: 15px 30px;
+        font-size: 1.2em;
+        border-radius: 50px;
+        cursor: pointer;
+        margin: 20px 0;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        transition: all 0.3s ease;
+        text-decoration: none;
+      }
+      .whatsapp-button:hover {
+        background: #128C7E;
+        transform: scale(1.05);
+      }
+      .whatsapp-button i {
+        font-size: 1.5em;
+      }
+      /* Made with love section */
+      .made-with-love {
+        font-size: 1.5em;
+        color: #ffb6c1;
+        margin: 40px 0;
+        font-style: italic;
+      }
+    </style>    
+  </head>    
+  <body>    
+    <!-- Intro Slides -->    
+    <div class="intro-container">    
+      <div class="intro-content">
+        <img src="ursinho.gif" alt="Ursinho" class="ursinho-img">
+        <div class="intro-slide active">    
+          <p class="intro-first-date">22 de Outubro de 2024</p>    
+          <p class="intro-first-line">Alguns encontros mudam nossas vidas para sempre...</p>    
+          <p class="intro-quote">    
+            <span class="intro-verse1">E naquele momento o tempo parou...</span>    
+            <span class="intro-verse2">e eu soube que nunca mais minha vida seria a mesma</span>    
+          </p>    
+          <div class="next-arrow" onclick="nextIntro()">➡</div>
+        </div>    
+        <div class="intro-slide">    
+          <p class="intro-lines">Cada momento ao seu lado é uma memória eterna...</p>    
+          <div class="next-arrow" onclick="nextIntro()">➡</div>
+        </div>    
+        <div class="intro-slide">    
+          <p class="intro-lines">Nossa história é feita de pequenos instantes mágicos...</p>    
+          <div class="next-arrow" onclick="nextIntro()">➡</div>
+        </div>    
+        <div class="intro-slide">    
+          <p class="intro-lines">Clique no botão abaixo para reviver nossa história...</p>    
+          <button id="surpresaBtn">Surpresa</button>    
+        </div>    
+      </div>
+    </div>    
+
+    <!-- Main Slideshow -->    
+    <div class="slideshow-container">    
+      <div class="slide"><img src="foto1.webp" alt="Foto 1"></div>    
+      <div class="slide"><img src="foto2.webp" alt="Foto 2"></div>    
+      <div class="slide"><img src="foto3.webp" alt="Foto 3"></div>    
+      <div class="slide"><img src="foto4.webp" alt="Foto 4"></div>    
+      <div class="dots">    
+        <span class="dot" onclick="currentSlide(0)"></span>    
+        <span class="dot" onclick="currentSlide(1)"></span>    
+        <span class="dot" onclick="currentSlide(2)"></span>    
+        <span class="dot" onclick="currentSlide(3)"></span>    
+      </div>    
+    </div>    
+
+    <div class="separator"><span></span><i>❤</i><span></span></div>    
+    <h1 class="main-title">Erika & Henrique</h1>    
+    <p class="frase">Amar você não é um acaso, é uma escolha que eu faria mil vezes, todos os dias. Com você, a vida não é apenas mais bonita… ela é mais inteira. Você tem o dom de transformar o comum em especial, de trazer paz só com a presença, de me lembrar o que realmente importa. Não há dúvidas em mim. Nenhuma. É com você que eu quero dividir os silêncios e as gargalhadas, os domingos preguiçosos e os dias difíceis. Quero construir um lar com o teu cheiro, com o som da nossa rotina e o calor de tudo que vamos viver juntos. Filhos, planos, bagunça e amor: o tipo de amor que envelhece firme, lado a lado. Não existe "até onde a vida vai nos levar", porque já sei o caminho: é o seu nome, o seu riso, sua mão na minha. Pra sempre não é tempo demais, quando é com você.    
+    </p>    
+
+    <div class="separator"><span></span><i>❤</i><span></span></div>    
+    <h2>Compartilhando Momentos há</h2>    
+    <div class="contador-wrapper">    
+      <div class="coluna"><label id="label-anos">Anos</label><span class="valor" id="anos">0</span></div>    
+      <div class="coluna"><label id="label-horas">Horas</label><span class="valor" id="horas">0</span></div>    
+      <div class="coluna"><label id="label-meses">Meses</label><span class="valor" id="meses">0</span></div>    
+      <div class="coluna"><label id="label-minutos">Minutos</label><span class="valor" id="minutos">0</span></div>    
+      <div class="coluna"><label id="label-dias">Dias</label><span class="valor" id="dias">0</span></div>    
+      <div class="coluna"><label id="label-segundos">Segundos</label><span class="valor" id="segundos">0</span></div>    
+    </div>    
+
+    <!-- Nova seção de vídeo -->  
+    <div class="separator"><span></span><i>❤</i><span></span></div>  
+    <div class="music-section">  
+      <p>Que tal dá um player na música</p>  
+      <p class="music-title">Que me faz lembrar de você?</p>  
+      <div class="video-container">  
+        <video id="music-video" controls poster="video-poster.jpg">  
+          <source src="vídeo.mp4" type="video/mp4">  
+          Seu navegador não suporta o elemento de vídeo.  
+        </video>  
+        <div class="video-poster" id="video-poster" style="background-image: url('video-poster.jpg');"></div>  
+      </div>  
+    </div>  
+
+    <div class="separator"><span></span><i>❤</i><span></span></div>    
+    <h1 class="history-title">Nossa História</h1>    
+    <p class="history-subtitle">Uma jornada de amor e momentos inesquecíveis.</p>    
+
+    <div class="orbit-container">    
+      <img src="sol.webp" alt="Sol" class="sun">    
+      <div class="orbit"><img src="terra.webp" alt="Terra" class="earth"></div>    
+    </div>    
+    <p class="solar-phrase">Juntos, estamos vivendo nossa primeira volta ao redor do sol... Dá pra acreditar?</p>    
+
+    <div class="separator"><span></span><i>❤</i><span></span></div>    
+    <div class="slideshow-container additional">    
+      <div class="slide"><img src="primeiro.webp" alt="Primeiro"></div>    
+      <div class="slide"><img src="segunda.webp" alt="Segunda"></div>    
+      <div class="slide"><img src="terceiro.webp" alt="Terceiro"></div>    
+      <div class="slide"><img src="quarto.webp" alt="Quarto"></div>    
+      <div class="dots">    
+        <span class="dot" onclick="currentSlideAdditional(0)"></span>    
+        <span class="dot" onclick="currentSlideAdditional(1)"></span>    
+        <span class="dot" onclick="currentSlideAdditional(2)"></span>    
+        <span class="dot" onclick="currentSlideAdditional(3)"></span>    
+      </div>    
+    </div>    
+    <p class="frase-additional">Você me faz querer desacelerar, olhar em volta, perceber os detalhes… porque, de algum jeito, tudo ao seu lado ganha mais cor.</p>    
+
+    <!-- QUIZ -->    
+    <div id="quiz-container">    
+      <h2>Quiz: Quanto você conhece a nossa história?</h2>    
+      <p class="question" id="question-area"></p>    
+      <select id="answer-select"></select>    
+      <button id="submit-answer">Responder</button>    
+      <p id="feedback" class="feedback"></p>    
+      <p id="final-result" class="final"></p> 
+    </div>    
+
+    <div class="separator"><span></span><i>❤</i><span></span></div>    
+    <p class="solar-phrase">Naquela noite, quando pedi você em namoro, a lua estava</p>    
+    <h1 class="main-title" style="color: white; font-size: 2.5em;">Lua Nova</h1>    
+    <img src="crescente.webp" alt="Lua Crescente" class="moon-img">    
+    <p class="solar-phrase">Assim como a Lua que se escondia para renascer, nosso amor também crescia na calma do invisível.</p>    
+
+    <!-- Nova seção de cantinhos especiais -->
+    <div class="separator"><span></span><i>❤</i><span></span></div>
+    <h1 class="main-title" style="color: white;">Cada momento com você é único</h1>
+    
+    <div class="slideshow-container additional">
+      <div class="slide"><img src="pastel.webp" alt="Pastel"></div>
+      <div class="slide"><img src="del.webp" alt="Del"></div>
+      <div class="dots">
+        <span class="dot" onclick="currentSlideSpecial(0)"></span>
+        <span class="dot" onclick="currentSlideSpecial(1)"></span>
+      </div>
+    </div>
+    <p class="frase-additional">A sua forma de existir me faz querer ser melhor, não porque você me cobra, mas porque você me inspira, sem esforço, sem perceber.</p>
+
+    <!-- Nova seção "Feito com todo carinho e amor do mundo" -->
+    <div class="separator"><span></span><i>❤</i><span></span></div>
+    <div class="made-with-love">
+      Feito com todo carinho e amor do mundo, só pra você 💖
+    </div>
+
+    <script>    
+      // Intro slideshow    
+      const introSlides = document.getElementsByClassName("intro-slide");    
+      let introIndex = 0;    
+      function showIntro(n) {    
+        Array.from(introSlides).forEach(s => s.classList.remove("active"));    
+        introSlides[n].classList.add("active");    
+      }    
+      function nextIntro() {    
+        introIndex = Math.min(introSlides.length - 1, introIndex + 1);    
+        showIntro(introIndex);    
+      }    
+
+      // Surpresa hearts    
+      document.addEventListener('DOMContentLoaded', () => {    
+        const btn = document.getElementById('surpresaBtn');    
+        btn.addEventListener('click', () => {    
+          document.querySelector('.intro-container').style.display = 'none';    
+          const emitter = setInterval(createHeart, 100);    
+          setTimeout(() => clearInterval(emitter), 3000);    
+        });    
+      });    
+      function createHeart() {    
+        const heart = document.createElement('div');    
+        heart.className = 'heart';    
+        heart.textContent = '❤';    
+        heart.style.left = `${Math.random() * window.innerWidth}px`;    
+        heart.style.top  = `${window.innerHeight + 20}px`;    
+        heart.style.fontSize = `${Math.random() + 1}em`;    
+        document.body.appendChild(heart);    
+        heart.addEventListener('animationend', () => heart.remove());    
+      }    
+
+      // Main slideshow    
+      let slideIndex = 0;    
+      const slides = document.getElementsByClassName("slideshow-container")[0].getElementsByClassName("slide"),    
+            dots   = document.getElementsByClassName("slideshow-container")[0].getElementsByClassName("dot");    
+      function showSlide(n) {    
+        Array.from(slides).forEach(s => s.style.display = 'none');    
+        Array.from(dots).forEach(d => d.classList.remove('active'));    
+        slides[n].style.display = 'block';    
+        dots[n].classList.add('active');    
+      }    
+      function nextSlide() { slideIndex = (slideIndex + 1) % slides.length; showSlide(slideIndex); }    
+      function currentSlide(n) { slideIndex = n; showSlide(n); }    
+      showSlide(0);    
+      setInterval(nextSlide, 3000);    
+
+      // Additional slideshow    
+      let slideIndexAdd = 0;    
+      const containerAdd = document.getElementsByClassName("slideshow-container additional")[0],    
+            slidesAdd    = containerAdd.getElementsByClassName("slide"),    
+            dotsAdd      = containerAdd.getElementsByClassName("dot");    
+      function showSlideAdditional(n) {    
+        Array.from(slidesAdd).forEach(s => s.style.display = 'none');    
+        Array.from(dotsAdd).forEach(d => d.classList.remove('active'));    
+        slidesAdd[n].style.display = 'block';    
+        dotsAdd[n].classList.add('active');    
+      }    
+      function nextSlideAdditional() { slideIndexAdd = (slideIndexAdd + 1) % slidesAdd.length; showSlideAdditional(slideIndexAdd); }    
+      function currentSlideAdditional(n) { slideIndexAdd = n; showSlideAdditional(n); }    
+      showSlideAdditional(0);    
+      setInterval(nextSlideAdditional, 3000);    
+
+      // Special slideshow (novo slideshow para cantinhos especiais)
+      let slideIndexSpecial = 0;
+      const containerSpecial = document.getElementsByClassName("slideshow-container additional")[1],
+            slidesSpecial = containerSpecial.getElementsByClassName("slide"),
+            dotsSpecial = containerSpecial.getElementsByClassName("dot");
+      function showSlideSpecial(n) {
+        Array.from(slidesSpecial).forEach(s => s.style.display = 'none');
+        Array.from(dotsSpecial).forEach(d => d.classList.remove('active'));
+        slidesSpecial[n].style.display = 'block';
+        dotsSpecial[n].classList.add('active');
+      }
+      function nextSlideSpecial() { slideIndexSpecial = (slideIndexSpecial + 1) % slidesSpecial.length; showSlideSpecial(slideIndexSpecial); }
+      function currentSlideSpecial(n) { slideIndexSpecial = n; showSlideSpecial(n); }
+      showSlideSpecial(0);
+      setInterval(nextSlideSpecial, 3000);
+
+      // Contador de tempo    
+      const dataInicio = new Date(2024, 9, 22, 22, 0, 0);    
+      function atualizarContador() {    
+        const agora = new Date();    
+        let anos   = agora.getFullYear()  - dataInicio.getFullYear();    
+        let meses  = agora.getMonth()     - dataInicio.getMonth();    
+        let dias   = agora.getDate()      - dataInicio.getDate();    
+        let horas  = agora.getHours()     - dataInicio.getHours();    
+        let mins   = agora.getMinutes()   - dataInicio.getMinutes();    
+        let segs   = agora.getSeconds()   - dataInicio.getSeconds();    
+        if (segs < 0) { segs += 60; mins--; }    
+        if (mins < 0) { mins += 60; horas--; }    
+        if (horas < 0) { horas += 24; dias--; }    
+        if (dias < 0) { const ld = new Date(agora.getFullYear(), agora.getMonth(), 0).getDate(); dias += ld; meses--; }    
+        if (meses < 0) { meses += 12; anos--; }    
+        document.getElementById("anos").textContent     = anos;    
+        document.getElementById("meses").textContent    = meses;    
+        document.getElementById("dias").textContent     = dias;    
+        document.getElementById("horas").textContent    = horas;    
+        document.getElementById("minutos").textContent  = mins;    
+        document.getElementById("segundos").textContent = segs;    
+        document.getElementById("label-anos").textContent     = anos   === 1 ? "Ano"     : "Anos";    
+        document.getElementById("label-meses").textContent    = meses  === 1 ? "Mês"     : "Meses";    
+        document.getElementById("label-dias").textContent     = dias   === 1 ? "Dia"     : "Dias";    
+        document.getElementById("label-horas").textContent    = horas  === 1 ? "Hora"    : "Horas";    
+        document.getElementById("label-minutos").textContent  = mins   === 1 ? "Minuto"  : "Minutos";    
+        document.getElementById("label-segundos").textContent = segs   === 1 ? "Segundo" : "Segundos";    
+      }    
+      setInterval(atualizarContador, 1000);    
+      atualizarContador();    
+
+      // QUIZ: Quanto você conhece o Henrique?    
+      const quiz = [    
+        { q: "Qual é a cor favorita do Henrique?", opts: ["Vermelho", "Branco", "Preto", "Azul"], ans: "Preto" },    
+        { q: "Qual é o hobby favorito do Henrique?", opts: ["Academia", "Vídeo Game", "Corrida", "Jogar Bola"], ans: "Jogar Bola" },    
+        { q: "Qual é a bebida preferida do Henrique?", opts: ["Café", "Suco", "Coca-Cola", "Vitamina"], ans: "Café" }    
+      ];    
+      let current = 0, score = 0;    
+      const questionArea = document.getElementById("question-area"),    
+            selectEl     = document.getElementById("answer-select"),    
+            btn          = document.getElementById("submit-answer"),    
+            feedbackEl   = document.getElementById("feedback"),    
+            finalEl      = document.getElementById("final-result");    
+
+      function loadQuestion() {    
+        if (current >= quiz.length) {    
+          const pct = Math.round((score / quiz.length) * 100);    
+          finalEl.textContent = `Você acertou ${pct}% das perguntas! 💖`;    
+          feedbackEl.textContent = "";    
+          questionArea.textContent = "";    
+          selectEl.style.display = "none";    
+          btn.disabled = true;    
+          return;    
+        }    
+        questionArea.textContent = quiz[current].q;    
+        selectEl.innerHTML = quiz[current].opts.map(o => `<option value="${o}">${o}</option>`).join("");    
+        feedbackEl.textContent = "";    
+      }    
+
+      btn.addEventListener("click", () => {    
+        const chosen = selectEl.value;    
+        const correct = quiz[current].ans;    
+        if (chosen === correct) {    
+          score++;    
+          feedbackEl.style.color = "#0f0";    
+          feedbackEl.textContent = "✅ Acertou!";    
+        } else {    
+          feedbackEl.style.color = "#f00";    
+          feedbackEl.textContent = `❌ Errou! Resposta certa: ${correct}`;    
+        }    
+        current++;    
+        setTimeout(loadQuestion, 1500);    
+      });    
+
+      loadQuestion();  
+
+      // Video poster click handler
+      document.getElementById('video-poster').addEventListener('click', function() {
+        const video = document.getElementById('music-video');
+        this.style.display = 'none';
+        video.style.display = 'block';
+        video.play();
+      });
+    </script>
+
+  </body>  
+</html>
